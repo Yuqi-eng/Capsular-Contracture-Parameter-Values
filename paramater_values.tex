@@ -1,0 +1,54 @@
+\newpage 
+\section*{Parameter values - original}
+[Copied from another file as an example of what we are looking for.]
+
+A few collected parameter values are given in Table~\ref{tab:params}. In \cite{owen1997pattern}, the random motility and chemotaxis parameters for macrophages are obtained from previously published (Boyden chamber)  experimental data, giving values in the range of 5 $\times 10^{-15}$m$^2$/s. (See their Table 1.) Those values were used for modeling macrophage-tumor interactions in \cite{owen1997pattern}. Those values are cited for a model of glioma in \cite{khajanchi2021spatiotemporal}. They are converted to more convenient units below.
+
+In \cite{khajanchi2021spatiotemporal}, we also find a typical proliferation rate of macrophages $\approx 0.3307$/h, and a carrying capacity (typical density) of  $10^6$ cells (domain size unspecified). Typical macrophage density: According to \cite{gupta2006spatiotemporal} there are 0.1 (normal) to about 1.0-1.2 (in injured tissue)  macrophages $\times 10^{-4}$ per $\mu$m$^2$. This buildup typically takes about 7 days. This leads to an estimate for recruitment rate of about $10^{-4}/(6\times 10^5) \approx 10^{-10}$ cells /$\mu$m$^2$/s. But in our 1D model, we need the square-root of the above domain, so obtaining a basal recruitment rate of around $a_0\approx 10^{-5}$ cells/$\mu$m/s.
+Macrophages can survive in tissue ``macrophages survive in tissue for weeks or months'' according to \cite{owen1997pattern}, whereas other cells have a turnover time of days.
+
+
+The paper by \cite{masur1996myofibroblasts} provides some information about myofibroblast ``recruitment'' (transdifferentiation from fibroblasts), stating that (rabit corneal) fibroblasts at a density of 5 or 500 cells/mm$^2$ produced 80\% or 10\% myofibroblasts after 5-7 days (in vitro experiment). According to \cite{gascard2016carcinoma} cancer associated fibroblasts (CAFs) can occupy about 80\% of a tumor. Taking a typical cell diameter ($\approx 10\mu$m), and 50\% of cells as fibroblasts in the tissue, we have a typical tissue fibroblast density of 0.05 cells/$\mu$m (in 1D). Suppose half of these transdifferntiate into myofibroblasts in 7 days. Then we have a ``basal myofibroblast recruitment rate'' of  $0.025/(7$ days) which is $\approx 4 \times 10^{-8}$ cells/s. [Note: myofibroblasts can be much larger than fibroblasts, about $50\mu$m long and $25\mu$m wide, \cite{masur1996myofibroblasts}.] They persist in cultures for about 3-7 days, so we can estimate their decay rate as $\delta_m\approx 1/7$(/day), which is roughly $10^{-6}$/s.
+
+What we also need to estimate is the macrophage-induced rate of myofibroblast recruitment $b$ (likely dependent on cytokines secreted by macrophages etc.). However, we could ball-park estimate that $b \approx 2-10 \times b_0$. 
+
+We refer to \cite{pakshir2019dynamic} for parameters of stress-related macrophage recruitment rate. According to this paper, macrophages are attracted to a stress field of myofibroblasts within a radius of around 600 $\mu$m at migration speeds of 0.5-1.4 $\mu$m/min. Taking a mean speed of 1$\mu$m/min resulting in a recruitment rate constant of roughly $1/(600\cdot 60)\approx 3 \times 10^{-5} $/s. This is still not what we need for the parameter $a_1$ (or $a_2$)  in our model's function $a(\sigma)$ as we need information about number (or density) of cells recruited per unit stress per unit time. 
+
+We may be able to get some information about the stress field induced by myofibroblasts (i.e. obtain $\alpha f(m)$ for our model) from the paper \cite{pakshir2019dynamic}.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|l|l|c|c|l|} \hline
+     Parameter & Meaning &value &units & Source  \\ \hline
+     
+      $D_\phi$ & Macrophage random motility & 0.005 & $\mu$m$^2$/s &in cancer \cite{owen1997pattern,khajanchi2021spatiotemporal} \\
+       $D_m$ & Myofibroblast random motility & & $\mu$m$^2$/s & \\
+      
+      $a_0$& Basal macrophage recruitment rate&$10^{-5}$& cells $\mu$m$^{-1}$/s& estimated from \cite{gupta2006spatiotemporal}\\
+      
+    $b_0$&Basal myofibroblast recruitment rate & $4 \times 10^{-8}$& cells/s& estimated from \cite{masur1996myofibroblasts,gascard2016carcinoma} \\
+    $b$&macrophage-induced myof recruit rate& ~$\approx 2-10\times b_0$& cells/s&very rough guess\\
+
+    
+    $\delta_m$&Myofibroblast turnover rate& $10^{-6}$& 1/s& estimated from \cite{masur1996myofibroblasts}\\
+
+    $\delta_\phi$&Macrophage turnover rate& $10^{-7}$&1/s& order of magn slower \cite{owen1997pattern}\\
+
+    &Normal macrophage density & &cells/$\mu$m$^3$ &\\
+ 
+      &Inflammed macrophage density & &cells/$\mu$m$^3$ &(or ratio of these)\\
+      
+      &Typical collagen density & 
+        &Amt/$\mu$m$^3$& \\
+
+    &Typical collagen turnover rate&
+        & 1/time & \\
+        
+      &Typical mofib density& 
+      &cells/$\mu$m$^3$ &\\
+      
+     &Typical myofib traction force& &pN/cell& \\   \hline
+    \end{tabular}
+    \caption{Typical ball-park estimates for some parameters in the model. \LEK{Many of these will not be easy to find, and will require ball-park estimates at best.}}
+    \label{tab:params}
+\end{table}
