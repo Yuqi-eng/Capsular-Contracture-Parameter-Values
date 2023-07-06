@@ -5,6 +5,8 @@
 \usepackage{amssymb}
 \usepackage{geometry}
 \usepackage{float}
+\usepackage{tabularx} 
+\usepackage{multirow}
 \usepackage{color, pifont}
  \geometry{
  a4paper,
@@ -47,88 +49,108 @@
 \newenvironment{Comment}
 {\paragraph{\color{pink}Comment.}}{\medbreak}
 
-\title{Summer 2023 Internship}
+\title{Parameter values for CC modelling}
 \author{Yuqi Xiao}
 
 \begin{document}
 
 \maketitle
 
-    \textbf{By uki}
-
-    In \cite{degnim2014immune}, Macrophage density is reported to be 192.8 cells/mm$^2$ in breast lobules without lobulitis, and 210.1 cells/mm$^2$ in breast lobules with lobulitis. Lobulitis is a rare inflammatory state and this data can be used to estimate inflammed macrophage density. Note that in mastectomies breast lobules are usually removed so I'm not sure how well this applies to breast cancer patients. The paper also points out the immune cells in normal breast tissues are primarily confined to breast lobules. A scaling of $\times$0.1 might be considered for density in extralobular tissues. 
-
-    \LEK{Notes: (1) We will usually take ``ballpark estimates'', so 192 and 210 will both be approximated as ``200''. However, we have to be very careful with interpreting densities. We should think of our 1D model as a block of tissue with length $L$, width $w$, and height $h$, where $0\le x \le L$ is the spatial coordinate, and $w,h$ are ``small'' fixed values (for example, 1 mm each). We need to express our estimates of density in terms of cells per unit volume, and multiply by our chosen values for $wh$ to convert to density per unit length. This should be done consistently to avoid goofs. So, for example, in the above estimates for macrophages, we need to know what was the ``thickness'' of the microscopy slide, or estimate it somehow, to get cells/mm$^3$.}
-
-    \LEK{There are some review papers about wound healing with references that can be helpful, e.g. see Chap 3 in \cite{teot2020textbook} and \cite{rodrigues2019wound}. In papers such as \cite{boyce2001inflammatory}, the macrophage density in normal tissue is compared to the density in keloid scars. There are 2.3 times more macrophages in those abnormal scars (several years after wounding).}
-
-    \response{uki: \cite{li2018hematoxylin} suggested tissues for H\&E staining should have thickness no more than 1mm. They used 7 $\mu m$ thick slices. \cite{chlipala2020optical} used 2-10 $\mu m$ slices for their study, looking at the nature of this study we can maybe assume that this is the common range used.}
-    
-    % We note that the density of macrophages in inflamed tissues vary depending on the type and severity of inflammation. Many studies agree that there is an increased macrophage density in inflamed tissues \cite{sun2012normal}, but I couldn't find an exact number of cells per unit volume (me and multiple AI tools). Leah suggested to set this to 5-10 times the baseline density. 
-
-    \cite{rutenberg2016uniform} suggested collagen density in human connective tissues, which is supposed to higher than in normal tissues. \cite{kehm2022comparison} reported 17.9-21.3\% breast tissue composition for collagen, this was measured by volume by optical spectroscopy (OS).
-    Collagen Type I turnover rate in human connective tissues is $\approx$1\% per year according to \cite{hackenberg2020collagen} which cited \cite{verzijl2000effect}. 
-
-    In ductal carcinoma in situ (considered the earliest form of breast cancer), fibroblasts consists of 12.1\% normal fibroblasts, 23.5\% myofibroblasts, 47\% resting fibroblasts and 17.4\% CAF \cite{risom2022transition}. \LEK{Excellent and useful information! And it is already ``nondimensional'', in \%, which is also great.} It is also stated in \cite{risom2022transition} that collagen density linearly associates with CAF and myofibroblast densities. 
-    
-
-    Myofibroblasts that are differentiated from fibroblasts are less motile compared to fibroblasts \cite{thampatty2007new}. Figure 4 in \cite{thampatty2007new} shows that myofibroblasts moves slower than fibroblasts, at $ 26\mu m/12 h$. This estimates to at maximum 9e-8 $\mu m^2/s$ if travelling in a square with equal distance to perpendicular directions, this does not make sense compared to the macrophage random motility value given in the table. \LEK{Yes, something fishy here.}
-
-    \cite{chen2007alpha} measured a myofibroblast traction force of $\approx 300$ Pa/cell. \cite{yang2021quantitative} reported contractile forces from myofibroblasts ranging from 100 pN/$\mu m^2$ to 2 nN/$\mu m^2$. \LEK{See also \cite{zollinger2018dependence} for comparison of traction forces of various cell types.}
-     
     \begin{table}[H]
-    \centering
-    \begin{tabular}{|l|l|c|c|l|} \hline
-     Parameter & Meaning &value &units & Source  \\ \hline
-     
-    $D_\phi$ & Macrophage random motility & 0.005 & $\mu$m$^2$/s &in cancer \cite{owen1997pattern,khajanchi2021spatiotemporal} \\
-    
-    $D_m$ & Myofibroblast random motility & 9$\times 10^{-8}$ & $\mu$m$^2$/s & \cite{thampatty2007new} \\
-      
-    $a_0$& Basal macrophage recruitment rate&$10^{-5}$& cells $\mu$m$^{-1}$/s& estimated from \cite{gupta2006spatiotemporal}\\
-      
-    $b_0$&Basal myofibroblast recruitment rate & $4 \times 10^{-8}$& cells/s& estimated from \cite{masur1996myofibroblasts,gascard2016carcinoma} \\
-    $b$&macrophage-induced myof recruit rate& ~$\approx 2-10\times b_0$& cells/s&very rough guess\\
-    
-    $\delta_m$&Myofibroblast turnover rate& $10^{-6}$& 1/s& estimated from \cite{masur1996myofibroblasts}\\
+        \centering
+        \begin{tabularx}{\textwidth}{|c|p{3.5cm}|c|c|X|} \hline
+        \multicolumn{2}{|c|}{Parameter} & Desired unit & Value & Source \\ \hline
+        \multicolumn{5}{|c|}{Macrophages} \\ \hline
+        $D_{\phi}$ & random motility & $\mu$m$^2$/s & 0.005 $\mu$m$^2$/s & in cancer \cite{owen1997pattern,khajanchi2021spatiotemporal} LEK\\ \hline
 
-    $\delta_\phi$&Macrophage turnover rate& $10^{-7}$&1/s& order of magn slower \cite{owen1997pattern}\\
+        $a_0$ & basal recruitment rate & cells $\mu$m$^{-1}$/s & $10^{-5}$ cells $\mu$m$^{-1}$/s & estimated from \cite{gupta2006spatiotemporal} LEK\\ \hline
 
-    $\phi$&Normal macrophage density & $\approx 1.9 \times 10^{-5}$ &cells/$\mu$m$^2$ & guessed from \cite{degnim2014immune}\\
+        $\delta_\phi$ & turnover rate & /s & $10^{-7}$/s & order of magn slower \cite{owen1997pattern} LEK \\ \hline
+
+        $\phi$ & normal density & cells/$\mu$m$^3$ & $1.9 \times10^{-6}$ cells/$\mu$m$^3$ & guessed from \cite{degnim2014immune} YX\\ \hline
  
-    $\phi_0$  &Inflammed macrophage density & $\approx2.1\times10^{-5}$ &cells/$\mu$m$^2$ & guessed from \cite{degnim2014immune}\\
-      
-    $C$  &Typical collagen density & 105
-        &Amt/$\mu$m$^3$& in connective tissues \cite{rutenberg2016uniform}\\
+        \multirow{3}{*}{$\phi_0$} & \multirow{3}{*}{inflammed density} & \multirow{3}{*}{cells/$\mu$m$^3$} & $2.1\times10^{-6}$ cells/$\mu$m$^3$ & guessed from \cite{degnim2014immune} YX\\ \cline{4-5}
 
-    $\delta_C$ &Typical collagen turnover rate&
-       $\approx$1 & \%/year & \cite{hackenberg2020collagen,verzijl2000effect}\\
+        & & & 1-1.2 $\phi$ & in injured tissues \cite{gupta2006spatiotemporal} LEK\\ \cline{4-5}
+
+        & & & 2.3 $\phi$ & in keloid scars \cite{boyce2001inflammatory} LEK\\ \hline
+
+        \multicolumn{5}{|c|}{Myofibroblasts} \\ \hline
+
+        $D_m$ & random motility & $\mu$m$^2$/s & 5$\times 10^{-7}$ $\mu$m$^2$/s & estimated from \cite{thampatty2007new} YX\\ \hline
+
+        $b_0$ & basal recruitment rate & cells/s & $4 \times 10^{-8}$ cells/s& estimated from \cite{masur1996myofibroblasts,gascard2016carcinoma} \newline LEK\\ \hline
         
-    $M$ &Typical myofib density& 
-      &cells/$\mu$m$^3$ & \cite{risom2022transition}\\
-      
-    $\tau$ &Typical myofib traction force& $\approx 300$ & Pa/cell & \cite{chen2007alpha} \\   \hline
-    \end{tabular}
-    \caption{Typical ball-park estimates for some parameters in the model.}
-    \label{tab:paramsSearch}
+        $b$ & macrophage-induced \newline recruitment rate & cells/s & $2-10\times b_0$ & very rough guess LEK\\ \hline
+        
+        $\delta_m$ & turnover rate & /s & $10^{-6}$/s & estimated from \cite{masur1996myofibroblasts} LEK\\ \hline
+
+        $M$ & typical density & cells/$\mu$m$^3$ & 23.5\% of all fibroblasts & in cancer \cite{risom2022transition} YX\\ \hline
+
+        \multirow{3}{*}{$\tau$} & \multirow{3}{*}{typical traction force} & \multirow{3}{*}{pN/cell} & 300 Pa/cell & \cite{chen2007alpha} YX\\ \cline{4-5}
+
+        & & & 100 pN/$\mu$m$^2$ - 2 nN/$\mu$m$^2$ & \cite{yang2021quantitative} CD\\ \cline{4-5}
+
+        & & & & \cite{zollinger2018dependence} LEK \\ \hline
+
+        \multicolumn{5}{|c|}{Collagen} \\ \hline
+
+        $C$ & typical density &Amt/$\mu$m$^3$ & 105 Amt/$\mu$m$^3$ & in connective tissues \cite{rutenberg2016uniform} YX\\ \hline
+
+        $\delta_C$ & typical turnover rate & \%/year & 1 \%/year & \cite{hackenberg2020collagen,verzijl2000effect} YX\\ \hline
+        
+        \end{tabularx}
+        \caption{Typical ball-park estimates for some parameters in the model.}
+        \label{tab:paramsSearch}
     \end{table}
 
-\textbf{By Leah}
+\section*{Macrophages}
+    \subsection{Random motility}
+         In \cite{owen1997pattern}, the random motility and chemotaxis parameters for macrophages are obtained from previously published (Boyden chamber)  experimental data, giving values in the range of 5 $\times 10^{-15}$m$^2$/s. (See their Table 1.) Those values were used for modeling macrophage-tumor interactions in \cite{owen1997pattern}. Those values are cited for a model of glioma in \cite{khajanchi2021spatiotemporal}. They are converted to more convenient units in table \ref{tab:paramsSearch}.
 
-A few collected parameter values are given in Table~\ref{tab:paramsSearch}. In \cite{owen1997pattern}, the random motility and chemotaxis parameters for macrophages are obtained from previously published (Boyden chamber)  experimental data, giving values in the range of 5 $\times 10^{-15}$m$^2$/s. (See their Table 1.) Those values were used for modeling macrophage-tumor interactions in \cite{owen1997pattern}. Those values are cited for a model of glioma in \cite{khajanchi2021spatiotemporal}. They are converted to more convenient units below.
+         In \cite{khajanchi2021spatiotemporal}, we also find a typical proliferation rate of macrophages $\approx 0.3307$/h, and a carrying capacity (typical density) of  $10^6$ cells (domain size unspecified).
 
-In \cite{khajanchi2021spatiotemporal}, we also find a typical proliferation rate of macrophages $\approx 0.3307$/h, and a carrying capacity (typical density) of  $10^6$ cells (domain size unspecified). Typical macrophage density: According to \cite{gupta2006spatiotemporal} there are 0.1 (normal) to about 1.0-1.2 (in injured tissue)  macrophages $\times 10^{-4}$ per $\mu$m$^2$. This buildup typically takes about 7 days. This leads to an estimate for recruitment rate of about $10^{-4}/(6\times 10^5) \approx 10^{-10}$ cells /$\mu$m$^2$/s. But in our 1D model, we need the square-root of the above domain, so obtaining a basal recruitment rate of around $a_0\approx 10^{-5}$ cells/$\mu$m/s.
-Macrophages can survive in tissue ``macrophages survive in tissue for weeks or months'' according to \cite{owen1997pattern}, whereas other cells have a turnover time of days.
+    \subsection{Recruitment rate}
+        According to \cite{gupta2006spatiotemporal} there are 0.1 (normal) to about 1.0-1.2 (in injured tissue)  macrophages $\times 10^{-4}$ per $\mu$m$^2$. This buildup typically takes about 7 days. This leads to an estimate for recruitment rate of about $10^{-4}/(6\times 10^5) \approx 10^{-10}$ cells /$\mu$m$^2$/s. But in our 1D model, we need the square-root of the above domain, so obtaining a basal recruitment rate of around $a_0\approx 10^{-5}$ cells/$\mu$m/s.
 
+    \subsection{Turnover rate}
+        Macrophages can survive in tissue ``macrophages survive in tissue for weeks or months'' according to \cite{owen1997pattern}, whereas other cells have a turnover time of days.
 
-The paper by \cite{masur1996myofibroblasts} provides some information about myofibroblast ``recruitment'' (transdifferentiation from fibroblasts), stating that (rabit corneal) fibroblasts at a density of 5 or 500 cells/mm$^2$ produced 80\% or 10\% myofibroblasts after 5-7 days (in vitro experiment). According to \cite{gascard2016carcinoma} cancer associated fibroblasts (CAFs) can occupy about 80\% of a tumor. Taking a typical cell diameter ($\approx 10\mu$m), and 50\% of cells as fibroblasts in the tissue, we have a typical tissue fibroblast density of 0.05 cells/$\mu$m (in 1D). Suppose half of these transdifferntiate into myofibroblasts in 7 days. Then we have a ``basal myofibroblast recruitment rate'' of  $0.025/(7$ days) which is $\approx 4 \times 10^{-8}$ cells/s. [Note: myofibroblasts can be much larger than fibroblasts, about $50\mu$m long and $25\mu$m wide, \cite{masur1996myofibroblasts}.] They persist in cultures for about 3-7 days, so we can estimate their decay rate as $\delta_m\approx 1/7$(/day), which is roughly $10^{-6}$/s.
+    \subsection{Density}
+        According to \cite{gupta2006spatiotemporal} there are 0.1 (normal) to about 1.0-1.2 (in injured tissue)  macrophages $\times 10^{-4}$ per $\mu$m$^2$. 
 
-What we also need to estimate is the macrophage-induced rate of myofibroblast recruitment $b$ (likely dependent on cytokines secreted by macrophages etc.). However, we could ball-park estimate that $b \approx 2-10 \times b_0$. 
+        In \cite{degnim2014immune}, Macrophage density is reported to be 192.8 cells/mm$^2$ in breast lobules without lobulitis, and 210.1 cells/mm$^2$ in breast lobules with lobulitis. Lobulitis is a rare inflammatory state and this data can be used to estimate inflammed macrophage density. Note that in mastectomies breast lobules are usually removed so I'm not sure how well this applies to breast cancer patients. The paper also points out the immune cells in normal breast tissues are primarily confined to breast lobules. A scaling of $\times$0.1 might be considered for density in extralobular tissues. \cite{li2018hematoxylin} suggested tissues for H\&E staining should have thickness no more than 1mm. They used 7 $\mu m$ thick slices. \cite{chlipala2020optical} used 2-10 $\mu m$ slices for their study, looking at the nature of this study we can maybe assume that this is the common range used. Assuming a $10\mu$m thick slide, I divide by the thickness to estimate the value in cells/mm$^3$. 
 
-We refer to \cite{pakshir2019dynamic} for parameters of stress-related macrophage recruitment rate. According to this paper, macrophages are attracted to a stress field of myofibroblasts within a radius of around 600 $\mu$m at migration speeds of 0.5-1.4 $\mu$m/min. Taking a mean speed of 1$\mu$m/min resulting in a recruitment rate constant of roughly $1/(600\cdot 60)\approx 3 \times 10^{-5} $/s. This is still not what we need for the parameter $a_1$ (or $a_2$)  in our model's function $a(\sigma)$ as we need information about number (or density) of cells recruited per unit stress per unit time. 
+        \LEK{Notes: (1) We will usually take ``ballpark estimates'', so 192 and 210 will both be approximated as ``200''. However, we have to be very careful with interpreting densities. We should think of our 1D model as a block of tissue with length $L$, width $w$, and height $h$, where $0\le x \le L$ is the spatial coordinate, and $w,h$ are ``small'' fixed values (for example, 1 mm each). We need to express our estimates of density in terms of cells per unit volume, and multiply by our chosen values for $wh$ to convert to density per unit length. This should be done consistently to avoid goofs. So, for example, in the above estimates for macrophages, we need to know what was the ``thickness'' of the microscopy slide, or estimate it somehow, to get cells/mm$^3$.}
 
-We may be able to get some information about the stress field induced by myofibroblasts (i.e. obtain $\alpha f(m)$ for our model) from the paper \cite{pakshir2019dynamic}.
+        \LEK{There are some review papers about wound healing with references that can be helpful, e.g. see Chap 3 in \cite{teot2020textbook} and \cite{rodrigues2019wound}. In papers such as \cite{boyce2001inflammatory}, the macrophage density in normal tissue is compared to the density in keloid scars. There are 2.3 times more macrophages in those abnormal scars (several years after wounding).}
 
+\section*{Myofibroblasts}
+    \subsection{Random motility}
+        Myofibroblasts that are differentiated from fibroblasts are less motile compared to fibroblasts \cite{thampatty2007new}. Figure 4 in \cite{thampatty2007new} shows that myofibroblasts moves slower than fibroblasts, a total movement of $ 60\mu m/12 h$. This estimates to at maximum 5e-7 $\mu m^2/s$ if travelling in a square with equal distance to perpendicular directions, this does not make sense compared to the macrophage random motility value given in the table. \LEK{Yes, something fishy here.}
+
+    \subsection{Recruitment rate}
+        The paper by \cite{masur1996myofibroblasts} provides some information about myofibroblast ``recruitment'' (transdifferentiation from fibroblasts), stating that (rabit corneal) fibroblasts at a density of 5 or 500 cells/mm$^2$ produced 80\% or 10\% myofibroblasts after 5-7 days (in vitro experiment). According to \cite{gascard2016carcinoma} cancer associated fibroblasts (CAFs) can occupy about 80\% of a tumor. Taking a typical cell diameter ($\approx 10\mu$m), and 50\% of cells as fibroblasts in the tissue, we have a typical tissue fibroblast density of 0.05 cells/$\mu$m (in 1D). Suppose half of these transdifferntiate into myofibroblasts in 7 days. Then we have a ``basal myofibroblast recruitment rate'' of  $0.025/(7$ days) which is $\approx 4 \times 10^{-8}$ cells/s. [Note: myofibroblasts can be much larger than fibroblasts, about $50\mu$m long and $25\mu$m wide, \cite{masur1996myofibroblasts}.] They persist in cultures for about 3-7 days, so we can estimate their decay rate as $\delta_m\approx 1/7$(/day), which is roughly $10^{-6}$/s.
+
+        What we also need to estimate is the macrophage-induced rate of myofibroblast recruitment $b$ (likely dependent on cytokines secreted by macrophages etc.). However, we could ball-park estimate that $b \approx 2-10 \times b_0$. 
+
+        We refer to \cite{pakshir2019dynamic} for parameters of stress-related macrophage recruitment rate. According to this paper, macrophages are attracted to a stress field of myofibroblasts within a radius of around 600 $\mu$m at migration speeds of 0.5-1.4 $\mu$m/min. Taking a mean speed of 1$\mu$m/min resulting in a recruitment rate constant of roughly $1/(600\cdot 60)\approx 3 \times 10^{-5} $/s. This is still not what we need for the parameter $a_1$ (or $a_2$) in our model's function $a(\sigma)$ as we need information about number (or density) of cells recruited per unit stress per unit time. 
+
+        We may be able to get some information about the stress field induced by myofibroblasts (i.e. obtain $\alpha f(m)$ for our model) from the paper \cite{pakshir2019dynamic}.
+
+    \subsection{Density}
+        In ductal carcinoma in situ (considered the earliest form of breast cancer), fibroblasts consists of 12.1\% normal fibroblasts, 23.5\% myofibroblasts, 47\% resting fibroblasts and 17.4\% CAF \cite{risom2022transition}. \LEK{Excellent and useful information! And it is already ``nondimensional'', in \%, which is also great.} It is also stated in \cite{risom2022transition} that collagen density linearly associates with CAF and myofibroblast densities. 
+
+    \subsection{Traction force}
+        \cite{chen2007alpha} measured a myofibroblast traction force of $\approx 300$ Pa/cell. \cite{yang2021quantitative} reported contractile forces from myofibroblasts ranging from 100 pN/$\mu m^2$ to 2 nN/$\mu m^2$. \LEK{See also \cite{zollinger2018dependence} for comparison of traction forces of various cell types.}
+
+\section*{Collagen}
+
+\cite{rutenberg2016uniform} suggested collagen density in human connective tissues, which is supposed to higher than in normal tissues. \cite{kehm2022comparison} reported 17.9-21.3\% breast tissue composition for collagen, this was measured by volume by optical spectroscopy (OS).
+
+Collagen Type I turnover rate in human connective tissues is $\approx$1\% per year according to \cite{hackenberg2020collagen} which cited \cite{verzijl2000effect}. 
+
+\newpage
 \bibliographystyle{unsrt}  
 \bibliography{CC}  %%
 
